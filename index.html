@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loan Guard - Fraud Detection</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+        input { display: block; width: 100%; margin: 10px 0; padding: 10px; }
+        button { background: #007bff; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; }
+        #result { margin-top: 20px; font-weight: bold; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h2>Loan Fraud Check</h2>
+    <input type="text" id="name" placeholder="Applicant Name">
+    <input type="number" id="income" placeholder="Monthly Income">
+    <input type="number" id="loan" placeholder="Loan Amount">
+    <button onclick="checkLoan()">Check Application</button>
+    <div id="result"></div>
+
+    <script>
+        async function checkLoan() {
+            const data = {
+                applicant_name: document.getElementById('name').value,
+                income: parseFloat(document.getElementById('income').value),
+                loan_amount: parseFloat(document.getElementById('loan').value)
+            };
+
+            const response = await fetch('http://127.0.0.1:8000/apply-loan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = "Decision: " + result.final_decision;
+            resultDiv.style.background = result.final_decision.includes("Approved") ? "#d4edda" : "#f8d7da";
+        }
+    </script>
+</body>
+</html>
